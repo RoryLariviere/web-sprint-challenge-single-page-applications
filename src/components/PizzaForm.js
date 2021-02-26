@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import formSchema from '../validation/formSchema';
 import * as yup from 'yup';
+import Pizza from './Pizza';
+import { Route, Link, Switch } from 'react-router-dom';
 
 ////////// INITIAL STATES //////////
 ////////// INITIAL STATES //////////
@@ -31,6 +33,7 @@ export default function PizzaForm(props){
     const [ formValues, setFormValues ] = useState(initialFormValue);
     const [ formErrors, setFormErrors ] = useState(initialFormErrors);
     const [ disabled, setDisabled ] = useState(initialDisabled);
+    console.log(order);
 
     const change = (name, value) => {
         yup.reach(formSchema, name).validate(value)
@@ -52,7 +55,8 @@ export default function PizzaForm(props){
         change(name, valueToUse);
     }
 
-    const formSubmit = () => {
+    const formSubmit = evt => {
+        evt.preventDefault();
         const newOrder = {
             name: formValues.name,
             size: formValues.size,
@@ -83,42 +87,50 @@ export default function PizzaForm(props){
             <div>
                 <h2>Build your own Pizza</h2>
             </div>
-
-            <label>enter your Name
-                <input value={formValues.name} onChange={onChange} name='name' type='text' />
-            </label>
-
-            <label>Choose a size
-                <select onChange={onChange} value={formValues.size} name='size'>
-                    <option value=''>Select</option>
-                    <option value='small'>small</option>
-                    <option value='medium'>medium</option>
-                    <option value='large'>large</option>
-                    <option value='extraLarge'>extra large</option>
-                </select>
-            </label>
-
-            <div className='checkboxes'>
-                <h4>add toppings</h4>
-
-                <label>pepperoni
-                    <input type='checkbox' name='pepperoni' onChange={onChange} checked={formValues.pepperoni} />
+            <form className='form-container' onSubmit={formSubmit} >
+                <label>enter your Name
+                    <input value={formValues.name} onChange={onChange} name='name' type='text' />
                 </label>
-                <label>pepperoncini
-                    <input type='checkbox' name='pepperoncini' onChange={onChange} checked={formValues.pepperoncini} />
-                </label>
-                <label>extraCheese
-                    <input type='checkbox' name='extraCheese' onChange={onChange} checked={formValues.extraCheese} />
-                </label>
-                <label>spinnach
-                    <input type='checkbox' name='spinnach' onChange={onChange} checked={formValues.spinnach} />
-                </label>
-            </div>
 
-            <label>special instructions
-                <input type='text' name='special' value={formValues.special} onChange={onChange} />
-            </label>
+                <label>Choose a size
+                    <select onChange={onChange} value={formValues.size} name='size'>
+                        <option value=''>Select</option>
+                        <option value='small'>small</option>
+                        <option value='medium'>medium</option>
+                        <option value='large'>large</option>
+                        <option value='extraLarge'>extra large</option>
+                    </select>
+                </label>
 
+                <div className='checkboxes'>
+                    <h4>add toppings</h4>
+
+                    <label>pepperoni
+                        <input type='checkbox' name='pepperoni' onChange={onChange} checked={formValues.pepperoni} />
+                    </label>
+                    <label>pepperoncini
+                        <input type='checkbox' name='pepperoncini' onChange={onChange} checked={formValues.pepperoncini} />
+                    </label>
+                    <label>extraCheese
+                        <input type='checkbox' name='extraCheese' onChange={onChange} checked={formValues.extraCheese} />
+                    </label>
+                    <label>spinnach
+                        <input type='checkbox' name='spinnach' onChange={onChange} checked={formValues.spinnach} />
+                    </label>
+                </div>
+
+                <label>special instructions
+                    <input type='text' name='special' value={formValues.special} onChange={onChange} />
+                </label>
+
+                <button disabled={disabled}>submit order</button>
+            </form>
+
+        <Switch>
+            <Route path='/Pizza'>
+                <Pizza order={order} />
+            </Route>
+        </Switch>
         </div>
     )
 }
