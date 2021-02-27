@@ -70,7 +70,7 @@ export default function PizzaForm(props){
                     <input type='text' name='special' value={values.special} onChange={onChange} />
                 </label>
 
-                <button disabled={disabled}>submit order</button>
+                <button id='button' disabled={disabled} >submit order</button>
                 <a href='/components/Pizza'>Go to your order!</a>
                 <div className='errors'>
                     <div>{errors.name}</div>
