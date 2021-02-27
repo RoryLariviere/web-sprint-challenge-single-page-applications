@@ -1,53 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import formSchema from '../validation/formSchema';
-import * as yup from 'yup';
-import Pizza from './Pizza';
-import { Route, Link, Switch } from 'react-router-dom';
-
-////////// INITIAL STATES //////////
-////////// INITIAL STATES //////////
-////////// INITIAL STATES //////////
-const initialFormValue = {
-    name: '',
-    size: '',
-    pepperoni: false,
-    pepperoncini: false,
-    extraCheese: false,
-    spinnach: false,
-    special: ''
-}
-const initialFormErrors = {
-    name: '',
-    size: '',
-    pepperoni: false,
-    pepperoncini: false,
-    extraCheese: false,
-    spinnach: false,
-    special: '' 
-}
-const initialOrder = [];
-const initialDisabled = true;
 
 export default function PizzaForm(props){
-    const [ order, setOrder ] = useState(initialOrder);
-    const [ formValues, setFormValues ] = useState(initialFormValue);
-    const [ formErrors, setFormErrors ] = useState(initialFormErrors);
-    const [ disabled, setDisabled ] = useState(initialDisabled);
-    console.log(order);
-
-    const change = (name, value) => {
-        yup.reach(formSchema, name).validate(value)
-            .then(()=>{
-                setFormErrors({...formErrors, [name]: ''})
-            })
-            .catch(err =>{
-                setFormErrors({...formErrors, [name]: err.errors[0]})
-            })
-        setFormValues({
-            ...formValues,
-            [name]: value
-        })
-    }
+    const { values, submit, change, disabled, errors } = props;
 
     const onChange = evt => {
         const {name, value, type, checked} = evt.target;
@@ -55,20 +9,12 @@ export default function PizzaForm(props){
         change(name, valueToUse);
     }
 
-    const formSubmit = evt => {
-        evt.preventDefault();
-        const newOrder = {
-            name: formValues.name,
-            size: formValues.size,
-            toppings: [`pepperoni`, `pepperoncini`, `extraCheese`, `spinnach`].filter(topping => formValues[topping]),
-            special: formValues.special
-        }
-        setOrder(newOrder)
-    }
+    const onSubmit = evt => {
+        evt.preventDefault()
+        submit()
+      }
 
-    useEffect(()=>{
-        formSchema.isValid(formValues).then(valid => setDisabled(!valid))
-    }, [formValues])
+
 
     return (
         <div>
@@ -81,19 +27,20 @@ export default function PizzaForm(props){
             </div>
             <div>
                 <h3>Build your own pizza</h3>
-                <img/>
+                <img />
             </div>
 
             <div>
                 <h2>Build your own Pizza</h2>
             </div>
-            <form className='form-container' onSubmit={formSubmit} >
+            <form className='form-container' onSubmit={onSubmit} >
+                
                 <label>enter your Name
-                    <input value={formValues.name} onChange={onChange} name='name' type='text' />
+                    <input value={values.name} onChange={onChange} name='name' type='text' />
                 </label>
 
                 <label>Choose a size
-                    <select onChange={onChange} value={formValues.size} name='size'>
+                    <select onChange={onChange} value={values.size} name='size'>
                         <option value=''>Select</option>
                         <option value='small'>small</option>
                         <option value='medium'>medium</option>
@@ -106,31 +53,30 @@ export default function PizzaForm(props){
                     <h4>add toppings</h4>
 
                     <label>pepperoni
-                        <input type='checkbox' name='pepperoni' onChange={onChange} checked={formValues.pepperoni} />
+                        <input type='checkbox' name='pepperoni' onChange={onChange} checked={values.pepperoni} />
                     </label>
                     <label>pepperoncini
-                        <input type='checkbox' name='pepperoncini' onChange={onChange} checked={formValues.pepperoncini} />
+                        <input type='checkbox' name='pepperoncini' onChange={onChange} checked={values.pepperoncini} />
                     </label>
                     <label>extraCheese
-                        <input type='checkbox' name='extraCheese' onChange={onChange} checked={formValues.extraCheese} />
+                        <input type='checkbox' name='extraCheese' onChange={onChange} checked={values.extraCheese} />
                     </label>
                     <label>spinnach
-                        <input type='checkbox' name='spinnach' onChange={onChange} checked={formValues.spinnach} />
+                        <input type='checkbox' name='spinnach' onChange={onChange} checked={values.spinnach} />
                     </label>
                 </div>
 
                 <label>special instructions
-                    <input type='text' name='special' value={formValues.special} onChange={onChange} />
+                    <input type='text' name='special' value={values.special} onChange={onChange} />
                 </label>
 
                 <button disabled={disabled}>submit order</button>
+                <a href='/components/Pizza'>Go to your order!</a>
+                <div className='errors'>
+                    <div>{errors.name}</div>
+                    <div>{errors.size}</div>
+                </div>
             </form>
-
-        <Switch>
-            <Route path='/Pizza'>
-                <Pizza order={order} />
-            </Route>
-        </Switch>
         </div>
     )
 }

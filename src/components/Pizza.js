@@ -1,7 +1,8 @@
 import React from 'react';
 
 export default function Pizza(props){
-    const { order } = props;
+    const { details } = props;
+    console.log('pizza details confirm', details)
     return (
     <div className='container'>
         <div className='nav-section'>
